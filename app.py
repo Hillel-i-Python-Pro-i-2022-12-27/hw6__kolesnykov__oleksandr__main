@@ -1,7 +1,8 @@
+from application.astronauts_info.info_about_astronauts import list_of_astronauts, get_count_of_astronauts
 from application.configs.paths import USEFUL_DATA_PATH, OUTPUT_DATA_PATH
+from application.find_average.find_average import get_formatted_parameters
 from application.work_with_files.actions import create_data_file, write_to_output_data, read_file
 from application.users_generator.generate_users import users_generator
-from application.astronauts_info.info_about_astronauts import list_of_astronauts, get_count_of_astronauts
 from flask import Flask
 from webargs import fields
 from webargs.flaskparser import use_args
@@ -38,6 +39,11 @@ def get_info_about_astronauts():
     Сейчас в космосе {get_count_of_astronauts()} космонавтов
     <ol>{temp}</ol>
     """
+
+
+@app.route("/mean/")
+def get_the_mean():
+    return get_formatted_parameters()
 
 
 if __name__ == "__main__":
