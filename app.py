@@ -1,6 +1,7 @@
 from application.configs.paths import USEFUL_DATA_PATH, OUTPUT_DATA_PATH
 from application.work_with_files.actions import create_data_file, write_to_output_data, read_file
 from application.users_generator.generate_users import users_generator
+from application.astronauts_info.info_about_astronauts import list_of_astronauts, get_count_of_astronauts
 from flask import Flask
 from webargs import fields
 from webargs.flaskparser import use_args
@@ -28,6 +29,15 @@ def get_users_generator(args):
     users = users_generator(amount)
     temp = "".join(f"<li>" f"<span>{user}</span>" f"</li>" for user in users)
     return f"<ol>{temp}</ol>"
+
+
+@app.route("/space/")
+def get_info_about_astronauts():
+    temp = "".join(f"<li>" f"<span>{astronaut}</span>" f"</li>" for astronaut in list_of_astronauts())
+    return f"""
+    Сейчас в космосе {get_count_of_astronauts()} космонавтов
+    <ol>{temp}</ol>
+    """
 
 
 if __name__ == "__main__":
