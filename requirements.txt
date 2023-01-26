@@ -12,4 +12,4 @@ pre-commit==2.21.0
 #Upgrade syntax.
 pyupgrade==3.3.1
 # for web requests
-requests
+requests==2.28.2
