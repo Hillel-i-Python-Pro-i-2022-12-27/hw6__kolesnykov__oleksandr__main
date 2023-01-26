@@ -4,3 +4,4 @@
 # Exclude
 !app.py
 !requirements.txt
+!application
