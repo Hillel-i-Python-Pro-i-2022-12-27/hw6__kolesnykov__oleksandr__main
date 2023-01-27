@@ -70,6 +70,51 @@ def phones_read_all():
     return "<br>".join([f'{user["phone_id"]}: {user["contact_name"]} - {user["phone_value"]}' for user in phones])
 
 
+@app.route("/db/read/<int:phone_id>")
+def users__read(phone_id: int):
+    with DBConnection() as connection:
+        user = connection.execute(
+            "SELECT * " "FROM phones " "WHERE (phone_id=:phone_id);",
+            {
+                "phone_id": phone_id,
+            },
+        ).fetchone()
+
+    return f'{user["phone_id"]}: {user["contact_name"]} - {user["phone_value"]}'
+
+
+@app.route("/db/update/<int:phone_id>")
+@use_args({"contact_name": fields.Str(), "phone_value": fields.Int()}, location="query")
+def users_update(args, phone_id):
+    with DBConnection() as connection:
+        with connection:
+            contact_name = args.get("contact_name")
+            phone_value = args.get("phone_value")
+
+            if contact_name is None and phone_value is None:
+                return "Need to provide at least one argument"
+
+            args_for_request = []
+
+            if contact_name is not None:
+                args_for_request.append("contact_name=:contact_name")
+            if phone_value is not None:
+                args_for_request.append("phone_value=:phone_value")
+
+            args_2 = ", ".join(args_for_request)
+
+            connection.execute(
+                "UPDATE phones " f"SET {args_2} " "WHERE phone_id=:phone_id;",
+                {
+                    "phone_id": phone_id,
+                    "contact_name": contact_name,
+                    "phone_value": phone_value,
+                },
+            )
+
+    return "Success"
+
+
 create_db_table()
 
 if __name__ == "__main__":
