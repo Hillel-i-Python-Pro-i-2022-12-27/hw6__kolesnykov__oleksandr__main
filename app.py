@@ -1,12 +1,15 @@
+from flask import Flask
+from webargs import fields
+from webargs.flaskparser import use_args
+
 from application.astronauts_info.info_about_astronauts import list_of_astronauts, get_count_of_astronauts
 from application.configs.paths import USEFUL_DATA_PATH, OUTPUT_DATA_PATH
 from application.find_average.find_average import get_formatted_parameters
 from application.work_with_files.actions import create_data_file, write_to_output_data, read_file
 from application.users_generator.generate_users import users_generator
-from flask import Flask
-from webargs import fields
-from webargs.flaskparser import use_args
 
+from application.db_services.db_create_table import create_db_table
+from application.db_services.db_connection import DBConnection
 
 app = Flask(__name__)
 
@@ -45,6 +48,21 @@ def get_info_about_astronauts():
 def get_the_mean():
     return get_formatted_parameters()
 
+
+@app.route("/db/create_user")
+@use_args({"contact_name": fields.Str(required=True), "phone_value": fields.Int(required=True)}, location="query")
+def create_user(args):
+    with DBConnection() as connection:
+        with connection:
+            connection.execute(
+                "INSERT INTO phones (contact_name, phone_value) VALUES (:contact_name, :phone_value);",
+                {"contact_name": args["contact_name"], "phone_value": args["phone_value"]},
+            )
+
+    return "Success"
+
+
+create_db_table()
 
 if __name__ == "__main__":
     app.run()
