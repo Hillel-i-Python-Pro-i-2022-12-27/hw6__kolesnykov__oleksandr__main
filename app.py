@@ -51,7 +51,7 @@ def get_the_mean():
 
 @app.route("/db/create_user")
 @use_args({"contact_name": fields.Str(required=True), "phone_value": fields.Int(required=True)}, location="query")
-def create_user(args):
+def phones_create_user(args):
     with DBConnection() as connection:
         with connection:
             connection.execute(
@@ -60,6 +60,14 @@ def create_user(args):
             )
 
     return "Success"
+
+
+@app.route("/db/read-all")
+def phones_read_all():
+    with DBConnection() as connection:
+        phones = connection.execute("SELECT * FROM phones;").fetchall()
+
+    return "<br>".join([f'{user["phone_id"]}: {user["contact_name"]} - {user["phone_value"]}' for user in phones])
 
 
 create_db_table()
