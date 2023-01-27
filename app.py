@@ -71,7 +71,7 @@ def phones_read_all():
 
 
 @app.route("/db/read/<int:phone_id>")
-def users__read(phone_id: int):
+def phones_users__read(phone_id: int):
     with DBConnection() as connection:
         user = connection.execute(
             "SELECT * " "FROM phones " "WHERE (phone_id=:phone_id);",
@@ -85,7 +85,7 @@ def users__read(phone_id: int):
 
 @app.route("/db/update/<int:phone_id>")
 @use_args({"contact_name": fields.Str(), "phone_value": fields.Int()}, location="query")
-def users_update(args, phone_id):
+def phones_users_update(args, phone_id):
     with DBConnection() as connection:
         with connection:
             contact_name = args.get("contact_name")
@@ -115,7 +115,22 @@ def users_update(args, phone_id):
     return "Success"
 
 
+@app.route("/db/delete_user/<int:phone_id>")
+def phones_delete_user(phone_id):
+    with DBConnection() as connection:
+        with connection:
+            connection.execute(
+                "DELETE " "FROM phones " "WHERE (phone_id=:phone_id);",
+                {
+                    "phone_id": phone_id,
+                },
+            )
+
+    return "Success"
+
+
 create_db_table()
+
 
 if __name__ == "__main__":
     app.run()
