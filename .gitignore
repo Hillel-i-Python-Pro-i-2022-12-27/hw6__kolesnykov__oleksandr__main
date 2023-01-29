@@ -4,3 +4,4 @@
 !files_output/.gitkeep
 /files_input/*
 !files_input/.gitkeep
+!db/.gitkeep
